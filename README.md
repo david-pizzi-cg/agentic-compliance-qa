@@ -54,6 +54,31 @@ This manual process presents several critical challenges:
 - Simple to modify rules or add new prohibited items
 - Foundation for future enhancements and integrations
 
+### Why a Generative AI Solution?
+
+Whilst automation could theoretically be achieved through traditional coded solutions, the nature of the submitted files makes a GenAI-based approach significantly more practical and maintainable.
+
+**The Challenge of Unstructured Data**
+
+Submitted files have no standardised format for representing their data. Each file may structure information differently—varying layouts, inconsistent field names, diverse data arrangements, and unpredictable formatting. A traditional coded solution would require bespoke parsing logic for each unique file format, resulting in:
+
+- Extensive development time to handle each variation
+- Brittle code that breaks when new formats are encountered
+- Continuous maintenance as file structures evolve
+- Limited scalability as the variety of formats increases
+
+**The GenAI Advantage**
+
+A GenAI solution leverages the reasoning capabilities of Large Language Models (LLMs) to:
+
+- **Infer data location** based on context and simple rules rather than rigid parsing logic
+- **Adapt to variations** in file structure without requiring code changes
+- **Handle ambiguity** through natural language understanding
+- **Generalise across formats** using learned patterns rather than explicit programming
+- **Reduce maintenance burden** by eliminating format-specific parsing code
+
+By using GenAI, the system can intelligently interpret the content of diverse file formats, making inferences about where relevant data is located and what it represents. This approach provides the flexibility needed to handle the inherent variability in submitted files whilst maintaining accuracy and reliability.
+
 ---
 
 ## Overview
@@ -193,3 +218,62 @@ flowchart TD
 - **Iterative Approach**: Can add complexity after validating core agent workflow
 
 **Note**: Agents highlighted in green represent the automated custom agents.
+
+---
+
+## Recommended Technology Solution
+
+### Microsoft 365 Copilot Custom Engine Agents
+
+Given the requirements for this automation workflow, **Microsoft 365 Copilot custom engine agents** represent the most suitable technology approach, particularly due to their native integration with Microsoft Teams and the Microsoft 365 ecosystem.
+
+### Why Not Declarative Agents?
+
+Whilst Microsoft 365 Copilot supports declarative agents, they are limited to single-task operations and are prone to hallucination when handling complex, multi-step workflows. Our use case requires:
+
+- Sequential coordination between multiple agents
+- Complex data processing and cross-referencing operations
+- Reliable execution across multiple stages (collection, analysis, publication)
+
+These requirements exceed the capabilities of declarative agents, making **custom engine agents** the appropriate choice for this solution.
+
+### Recommended Approach: Copilot Studio
+
+Amongst the available options for building custom engine agents, **Copilot Studio** emerges as the optimal solution for this proof of concept due to:
+
+**Low-Code Development**
+- Simplifies agent creation without extensive coding requirements
+- Reduces development time and complexity
+- Provides prebuilt templates and connectors for Microsoft 365 services
+
+**Native Integration**
+- Seamless connection to Teams for automated report publishing
+- Built-in access to Microsoft 365 and Copilot connector content
+- Integrated compliance via Power Platform
+
+**Managed Infrastructure**
+- Fully managed SaaS platform eliminates hosting concerns
+- Built-in governance and security features
+- Simplified deployment and maintenance
+
+**Rapid Prototyping**
+- Ideal for proof of concept development
+- Quick iteration and testing capabilities
+- Lower barrier to entry for demonstration and validation
+
+### Alternative Approaches
+
+For comparison, the Microsoft documentation provides a comprehensive overview of development tool options:
+
+| **Approach** | **Best For** | **Complexity** |
+|---|---|---|
+| **Copilot Studio** (Recommended) | Rapid development, low-code solutions, Teams integration | Low |
+| **Microsoft 365 Agents SDK** | Multi-channel deployment, custom orchestration requirements | High |
+| **Teams SDK** | Teams-specific collaborative scenarios | Medium |
+| **Microsoft Foundry** | Existing AI logic in Foundry requiring Microsoft 365 integration | Medium-High |
+
+For detailed comparison and technical specifications, refer to the [Microsoft 365 Custom Engine Agent documentation](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/overview-custom-engine-agent#agent-development-tool-comparison).
+
+### Implementation Path
+
+For this proof of concept, Copilot Studio provides the most efficient path to demonstrating the feasibility of the multi-agent automation workflow whilst maintaining integration with Teams and compliance with organisational requirements.
