@@ -12,25 +12,30 @@ This is a temporary quality check process to validate that the automated detecti
 
 This manual process presents several critical challenges:
 
-**Time-Intensive Operations**
-- Daily manual extraction from Power BI reports consumes significant staff time
-- Manual file retrieval from Blob Storage is repetitive and error-prone
-- Cross-referencing files with prohibited items lists requires careful attention and is labour-intensive
+**Time-Intensive Operations**  
+- Daily manual extraction from Power BI reports consumes significant staff time  
+- Manual file retrieval from Blob Storage is repetitive and error-prone  
+- Cross-referencing files with prohibited items lists requires careful attention and is labour-intensive  
+- On average, this process takes **1–2 hours every working day**, representing a recurring operational cost
 
-**Consistency and Accuracy Concerns**
-- Manual processes are susceptible to human error
-- Inconsistent report formatting and potential for missed items
+**Consistency and Accuracy Concerns**  
+- Manual processes are susceptible to human error  
+- Inconsistent report formatting and potential for missed items  
 - Variable quality depending on operator workload and fatigue
 
-**Scalability Limitations**
-- Process doesn't scale well with increasing data volume
-- Manual steps create bottlenecks that delay reporting
+**Scalability Limitations**  
+- Process doesn’t scale well with increasing data volume  
+- Manual steps create bottlenecks that delay reporting  
 - Difficult to handle peak periods or urgent requests
 
-**Operational Efficiency**
-- Staff time could be better utilised for analysis rather than data collection
-- Delays in report publication affect decision-making timelines
+**Operational Efficiency**  
+- Staff time could be better utilised for analysis rather than data collection  
+- Delays in report publication affect decision-making timelines  
 - No ability to run on-demand or outside business hours
+
+**Business Impact**  
+Automating this workflow would free approximately **5–10 hours of staff time per week**, improve operational resilience by reducing dependency on specific individuals, and deliver a fast return on investment by removing repetitive manual effort from highly skilled personnel.
+
 
 ### Expected Benefits of Automation
 
