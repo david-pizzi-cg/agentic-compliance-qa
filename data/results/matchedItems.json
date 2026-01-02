@@ -1,0 +1,134 @@
+[
+  {
+    "itemId": 101,
+    "packingListId": "1734516900001",
+    "description": "Fresh Mangoes - Kent variety, tree-ripened",
+    "typeOfTreatment": "Chilled",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "location": "Page 1",
+    "row": 3,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 102,
+    "packingListId": "1734516900001",
+    "description": "Valencia Oranges - Fresh citrus, medium size",
+    "typeOfTreatment": "Raw",
+    "commodityCode": "08051020",
+    "countryOfOrigin": "EG",
+    "location": "Page 1",
+    "row": 5,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 106,
+    "packingListId": "1734516900001",
+    "description": "Fresh Carrots - Organic, unpeeled",
+    "typeOfTreatment": "Fresh",
+    "commodityCode": "07061000",
+    "countryOfOrigin": "CN",
+    "location": "Page 2",
+    "row": 6,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 107,
+    "packingListId": "1734516900001",
+    "description": "Celery Stalks - Fresh cut, crisp variety",
+    "typeOfTreatment": "Raw",
+    "commodityCode": "07094000",
+    "countryOfOrigin": "EG",
+    "location": "Page 3",
+    "row": 1,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 108,
+    "packingListId": "1734516900001",
+    "description": "Root Vegetables - Mixed variety, fresh",
+    "typeOfTreatment": "Fresh",
+    "commodityCode": "07069090",
+    "countryOfOrigin": "MA",
+    "location": "Page 3",
+    "row": 3,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 113,
+    "packingListId": "1734521400002",
+    "description": "Mangoes - Heat-treated and processed for export",
+    "typeOfTreatment": "Processed",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "location": "Sheet1",
+    "row": 8,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 128,
+    "packingListId": "1734609600005",
+    "description": "Guava Puree - Fresh fruit pulp, unsweetened",
+    "typeOfTreatment": "Fresh",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "location": "Page 2",
+    "row": 1,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 142,
+    "packingListId": "1734688800008",
+    "description": "Mandarin Segments - Canned in light syrup",
+    "typeOfTreatment": "Raw",
+    "commodityCode": "08052100",
+    "countryOfOrigin": "EG",
+    "location": "Sheet1",
+    "row": 7,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 152,
+    "packingListId": "1734698100010",
+    "description": "Clementines - Seedless variety, fresh citrus",
+    "typeOfTreatment": "Fresh",
+    "commodityCode": "08054000",
+    "countryOfOrigin": "EG",
+    "location": "Sheet1",
+    "row": 6,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 162,
+    "packingListId": "1734709200012",
+    "description": "Mango Slices - Frozen, IQF processed",
+    "typeOfTreatment": "Unprocessed",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "location": "Page 2",
+    "row": 2,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 163,
+    "packingListId": "1734709200012",
+    "description": "Grapefruit Sections - Pink variety, fresh",
+    "typeOfTreatment": "Fresh",
+    "commodityCode": "08054000",
+    "countryOfOrigin": "EG",
+    "location": "Page 2",
+    "row": 4,
+    "failure": "Prohibited item identified on the packing list"
+  },
+  {
+    "itemId": 171,
+    "packingListId": "1734773400014",
+    "description": "Guava Juice - 100% pure, not from concentrate",
+    "typeOfTreatment": "Raw",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "location": "Sheet1",
+    "row": 3,
+    "failure": "Prohibited item identified on the packing list"
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "applicationId": "1734516900001",
+    "submissionDateTime": "2024-12-23 08:15:00",
+    "registrationApprovalNumber": "RMS-GB-000123-001",
+    "allRequiredFieldsPresent": false,
+    "parserModel": "mars-1",
+    "reasonsForFailure": "Prohibited item identified on the packing list in Page 1 row 3, Page 1 row 5, Page 2 row 6 in addition to 2 other locations."
+  },
+  {
+    "applicationId": "1734521400002",
+    "submissionDateTime": "2024-12-23 08:45:00",
+    "registrationApprovalNumber": "RMS-GB-000245-002",
+    "allRequiredFieldsPresent": false,
+    "parserModel": "asda-3",
+    "reasonsForFailure": "Prohibited item identified on the packing list in Sheet1 row 8."
+  },
+  {
+    "applicationId": "1734609600005",
+    "submissionDateTime": "2024-12-23 10:30:00",
+    "registrationApprovalNumber": "RMS-GB-000512-001",
+    "allRequiredFieldsPresent": false,
+    "parserModel": "coop-1",
+    "reasonsForFailure": "Prohibited item identified on the packing list in Page 2 row 1."
+  },
+  {
+    "applicationId": "1734688800008",
+    "submissionDateTime": "2024-12-23 12:45:00",
+    "registrationApprovalNumber": "RMS-GB-000878-004",
+    "allRequiredFieldsPresent": false,
+    "parserModel": "iceland-2",
+    "reasonsForFailure": "Prohibited item identified on the packing list in Sheet1 row 7."
+  },
+  {
+    "applicationId": "1734698100010",
+    "submissionDateTime": "2024-12-23 14:00:00",
+    "registrationApprovalNumber": "RMS-GB-001105-002",
+    "allRequiredFieldsPresent": false,
+    "parserModel": "greggs-1",
+    "reasonsForFailure": "Prohibited item identified on the packing list in Sheet1 row 6."
+  },
+  {
+    "applicationId": "1734709200012",
+    "submissionDateTime": "2024-12-23 15:20:00",
+    "registrationApprovalNumber": "RMS-GB-000489-003",
+    "allRequiredFieldsPresent": false,
+    "parserModel": "tesco-2",
+    "reasonsForFailure": "Prohibited item identified on the packing list in Page 2 row 2, Page 2 row 4."
+  },
+  {
+    "applicationId": "1734773400014",
+    "submissionDateTime": "2024-12-23 16:30:00",
+    "registrationApprovalNumber": "RMS-GB-000991-001",
+    "allRequiredFieldsPresent": false,
+    "parserModel": "booker-1",
+    "reasonsForFailure": "Prohibited item identified on the packing list in Sheet1 row 3."
+  }
+]
