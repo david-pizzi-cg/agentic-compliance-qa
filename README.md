@@ -17,7 +17,7 @@ flowchart TD
     A[Application] -->|Push Data| B[(PostgreSQL Server)]
     B -->|Pull Data| C[Power BI Report]
     C-->|Daily Manual Extraction| D[Report: Prohibited Items<br/>Detected Yesterday]
-    E[Blob Storage] -->|Manual Extraction| F[Submitted Files]
+    E[Azure Blob Storage] -->|Manual Extraction| F[Submitted Files]
     D -->|Manual Cross-Reference| G{Cross Reference with<br/>Prohibited Items List}
     F -->|Manual Cross-Reference| G
     H[Prohibited Items List] -->|Reference| G
@@ -44,7 +44,7 @@ flowchart TD
 1. **Data Ingestion**: Application pushes data to PostgreSQL server
 2. **Reporting**: PostgreSQL data is pulled into Power BI report
 3. **Manual Extraction**: Daily manual extraction of report showing prohibited items detected the previous day
-4. **File Retrieval**: Manual extraction of corresponding submitted files from Blob Storage
+4. **File Retrieval**: Manual extraction of corresponding submitted files from Azure Blob Storage
 5. **Cross-Reference**: Manual cross-referencing of files and reports with prohibited items list to generate detailed report
 6. **Publication**: Manual publishing of report to Teams channel
 
@@ -58,7 +58,7 @@ This manual process presents several critical challenges:
 
 **Time-Intensive Operations**  
 - Daily manual extraction from Power BI reports consumes significant staff time  
-- Manual file retrieval from Blob Storage is repetitive and error-prone  
+- Manual file retrieval from Azure Blob Storage is repetitive and error-prone  
 - Cross-referencing files with prohibited items lists requires careful attention and is labour-intensive  
 - On average, this process takes **1–2 hours every working day**, representing a recurring operational cost
 
@@ -193,11 +193,12 @@ For this proof of concept, a **hybrid approach using Copilot Studio and Power Au
 
 The proof of concept (POC) uses a hybrid architecture combining Power Automate flows and Copilot Studio custom prompts:
 
-1. **Data Filtering** - Power Automate flow retrieves packing lists with prohibited item failures from Blob Storage
-2. **Item Filtering** - Power Automate flow filters items list to those from flagged applications with failure indicators
-3. **Validation** - Power Automate flow validates filtered items against the prohibited items database
-4. **Report Formatting** - Custom prompt generates formatted HTML report with metrics, parser model tracking, and detailed findings
-5. **Teams Publishing** - Power Automate posts the report to a Teams channel
+1. **Daily Trigger** - Power Automate scheduled flow triggers daily at 8AM, invoking the Copilot Agent with the prompt "performs automated daily compliance validation of packing lists against ineligible items regulations"
+2. **Data Filtering** - Power Automate flow retrieves packing lists with ineligible item failures from Azure Blob Storage
+3. **Item Filtering** - Power Automate flow filters items list to those from flagged applications with failure indicators
+4. **Validation** - Power Automate flow validates filtered items against the ineligible items database
+5. **Report Formatting** - Custom prompt generates formatted HTML report with metrics, parser model tracking, and detailed findings
+6. **Teams Publishing** - Power Automate posts the report to a Teams channel
 
 To validate the workflow without integration complexity, the POC uses mock data representing real production data structures. The packing list and items list data structures mirror the actual output from the production packing list parser system, augmented with relevant test data to demonstrate prohibited item detection scenarios.
 
@@ -207,7 +208,7 @@ To validate the workflow without integration complexity, the POC uses mock data 
 
 - **Mock Dataset**: Uses JSON files representing real production data structures from the packing list parser system
 - **Data Structures**: Packing lists and items lists mirror actual production schemas, augmented with test scenarios
-- **Data Validation**: Items with failure indicators verified against prohibited items database to ensure data integrity
+- **Data Validation**: Items with failure indicators verified against ineligible items database to ensure data integrity
 - **Single Source**: All data stored in Azure Blob Storage for simplified POC testing
 - **Hybrid Architecture**: Power Automate for structured operations, custom prompts for AI-driven tasks
 - **No Live Integration**: Bypasses PostgreSQL and Power BI to focus on workflow automation
@@ -220,36 +221,49 @@ The following diagram shows the POC architecture combining Power Automate flows 
 
 ```mermaid
 flowchart TD
-    A[Packing Lists Data]
-    B[Items List Data]
-    C[Prohibited Items Database]
+    S[Power Automate:<br/>Scheduled Trigger<br/>Daily at 8AM]
     
-    A --> D[Blob Storage:<br/>Mock Dataset]
-    B --> D
-    C --> D
+    S -->|Invoke agent with prompt| T[Copilot Agent]
     
-    D -->|Filter by date & failures| E[Flow 1:<br/>Filter Packing Lists]
+    T -->|Execute| E
     
-    E -->|Flagged applications| F[Flow 2:<br/>Filter Items]
+    subgraph ADV["📋 TOPIC: Automated Daily Validation"]
+        E[Flow 1:<br/>Filter Packing Lists]
+        F[Flow 2:<br/>Filter Items]
+        G[Flow 3:<br/>Validate Items]
+        H[Custom Prompt:<br/>Format Report]
+        I[Flow 4:<br/>Post to Teams]
+        
+        E --> F
+        F --> G
+        G --> H
+        H --> I
+    end
     
-    D -->|Items list| F
+    I --> J[Teams Channel]
     
-    F -->|Filtered items| G[Flow 3:<br/>Validate Items]
+    subgraph DS["Data Sources"]
+        direction TB
+        A[Packing Lists Data]
+        B[Items List Data]
+        C[Ineligible Items Database]
+        A --> D[Azure Blob Storage:<br/>Mock Dataset]
+        B --> D
+        C --> D
+    end
     
-    D -->|Prohibited database| G
+    D -.->|Data access| E
+    D -.->|Data access| F
+    D -.->|Data access| G
     
-    G -->|Validation results| H[Custom Prompt:<br/>Format Report]
-    
-    E -->|Parser model data| H
-    
-    H -->|HTML report| I[Flow 4:<br/>Post to Teams]
-    
-    I -->|Publish| J[Teams Channel]
-    
+    style S fill:#ff69b4,stroke:#c71585,stroke-width:3px
+    style T fill:#dda0dd,stroke:#9370db,stroke-width:3px
+    style ADV fill:#f0f0f0,stroke:#666,stroke-width:3px
+    style DS fill:#fffaf0,stroke:#daa520,stroke-width:2px,stroke-dasharray: 5 5
     style A fill:#fff4e1
     style B fill:#fff4e1
     style C fill:#ffe1f5
-    style D fill:#ffd700,stroke:#ff8c00,stroke-width:3px
+    style D fill:#fff4e1
     style E fill:#87ceeb,stroke:#4682b4,stroke-width:3px
     style F fill:#87ceeb,stroke:#4682b4,stroke-width:3px
     style G fill:#87ceeb,stroke:#4682b4,stroke-width:3px
@@ -259,33 +273,51 @@ flowchart TD
     
     classDef flow fill:#87ceeb,stroke:#4682b4,stroke-width:3px
     classDef prompt fill:#98fb98,stroke:#228b22,stroke-width:3px
+    classDef trigger fill:#ff69b4,stroke:#c71585,stroke-width:3px
+    classDef agent fill:#dda0dd,stroke:#9370db,stroke-width:3px
     class E,F,G,I flow
     class H prompt
+    class S trigger
+    class T agent
 ```
 
 ### Data Files Reference
+
+**Note**: The workflow is initiated daily at 8AM by a scheduled Power Automate flow that triggers the Copilot Agent with the prompt: "performs automated daily compliance validation of packing lists against ineligible items regulations". The agent's instructions point to the 'Automated Daily Validation' prompt, which orchestrates the following data flows:
 
 | File | Stage | Description | Sample |
 |------|-------|-------------|--------|
 | **packing_list_mock_data.json** | Input Data | Packing lists with submission metadata, parser models, and failure reasons | [View sample](data/input/packing_list_mock_data.json) |
 | **items_list_mock_data.json** | Input Data | Individual items extracted from packing lists with commodity codes and treatments | [View sample](data/input/items_list_mock_data.json) |
-| **data-ineligible-items.json** | Input Data | Prohibited items database with 2038 rules (country, commodity code, treatment combinations) | [View sample](data/input/data-ineligible-items.json) |
-| **packingListData.json** | Flow 1 Output | Flagged applications with parser models (7 applications with prohibited item failures) | [View sample](data/results/packingListData.json) |
+| **data-ineligible-items.json** | Input Data | Ineligible items database with 2038 rules (country, commodity code, treatment combinations) | [View sample](data/input/data-ineligible-items.json) |
+| **packingListData.json** | Flow 1 Output | Flagged applications with parser models (7 applications with ineligible item failures) | [View sample](data/results/packingListData.json) |
 | **matchedItems.json** | Flow 2 Output | Filtered items from flagged applications with failure indicators | [View sample](data/results/matchedItems.json) |
 | **validationResult.json** | Flow 3 Output | Validation results with isProhibited flags and matched rule details | [View sample](data/results/validationResult.json) |
 | **validationReport.html** | Custom Prompt Output | Formatted HTML compliance report with parser model tracking and detailed findings | [View sample](data/results/validationReport.html) |
 
 ### Detailed Workflow Steps
 
+#### **Flow 0: Daily Trigger and Agent Invocation**
+- **Type**: Power Automate Scheduled Flow
+- **Purpose**: Automatically initiate the compliance validation workflow daily
+- **Schedule**: Every day at 8:00 AM
+- **Operations**:
+  - **Trigger Execution**: Scheduled flow triggers at 8:00 AM
+  - **Agent Invocation**: Flow invokes Copilot Agent with the prompt: "performs automated daily compliance validation of packing lists against ineligible items regulations"
+  - **Agent Processing**: Agent receives the prompt and evaluates its instructions
+  - **Topic Selection**: Agent instructions explicitly route to the 'Automated Daily Validation' topic
+  - **Workflow Orchestration**: The 'Automated Daily Validation' topic executes its contained flows (Flows 1-4) and custom prompt sequentially
+  - **Data Flow**: Topic coordinates data passing between flows and manages the end-to-end workflow execution
+
 #### **Flow 1: Filter Packing Lists**
 - **Type**: Power Automate Flow
-- **Purpose**: Identify packing lists with prohibited item failures
+- **Purpose**: Identify packing lists with ineligible item failures
 - **Input**: [packing_list_mock_data.json](data/input/packing_list_mock_data.json)
 - **Output**: [packingListData.json](data/results/packingListData.json)
 - **Operations**:
   - Filter by submission date
   - Filter by allRequiredFieldsPresent = false
-  - Filter by reasonsForFailure contains "Prohibited item identified"
+  - Filter by reasonsForFailure contains "Ineligible item identified"
   - Extract applicationId and parserModel for each flagged application
 
 #### **Flow 2: Filter Items**
@@ -298,12 +330,12 @@ flowchart TD
 - **Operations**:
   - Select applicationIds from Flow 1 output
   - Filter items where packingListId is in applicationIds array
-  - Filter items where failure field contains "Prohibited item identified"
+  - Filter items where failure field contains "Ineligible item identified"
   - Return complete item records for validation
 
 #### **Flow 3: Validate Items**
 - **Type**: Power Automate Flow
-- **Purpose**: Validate items against prohibited items database
+- **Purpose**: Validate items against ineligible items database
 - **Inputs**:
   - [matchedItems.json](data/results/matchedItems.json) (from Flow 2)
   - [data-ineligible-items.json](data/input/data-ineligible-items.json)
@@ -315,7 +347,7 @@ flowchart TD
   - Return isProhibited flag and matched rule details
 
 #### **Custom Prompt: Format Report**
-- **Type**: Copilot Studio Custom Prompt
+- **Type**: Copilot Studio Custom Prompt ('Automated Daily Validation')
 - **Purpose**: Generate formatted compliance report with parser model tracking
 - **Inputs**:
   - reportDate: Date for the report
@@ -323,8 +355,8 @@ flowchart TD
   - [packingListData.json](data/results/packingListData.json) (from Flow 1)
 - **Output**: [validationReport.html](data/results/validationReport.html)
 - **Operations**:
-  - Calculate summary metrics (Total Prohibited Items, Items Cleared)
-  - Extract unique parser models from packingListData
+  - Calculate summary metrics (Total Ineligible Items Found, Total Ineligible Items Cleared, Total Applications with Ineligible Items, Total Applications Cleared of Ineligible Items)
+  - Extract unique parser models with ineligible items from packingListData
   - Map parserModel to each application in the report
   - Group items by Application ID
   - Format as HTML for Teams with parser model column
@@ -351,7 +383,7 @@ flowchart TD
 - **Data Integrity**: Systematic validation ensures all flagged items match prohibited rules
 - **Testability**: Fixed dataset ensures consistent results for validation
 
-**Note**: Blue boxes represent Power Automate flows (structured operations), green boxes represent Copilot Studio custom prompts (AI-driven tasks).
+**Note**: Pink box represents the scheduled trigger, purple box represents the Copilot Agent, blue boxes represent Power Automate flows (structured operations), green boxes represent Copilot Studio custom prompts (AI-driven tasks).
 
 ### POC Result Example
 
@@ -361,8 +393,10 @@ The following screenshot shows the actual output posted to Teams channel by the 
 
 The report includes:
 - **Report Header**: Date and emoji for visual identification
-- **Executive Summary**: Key metrics (prohibited items found, items cleared, parser models used)
+- **Executive Summary**: Key metrics (Total Ineligible Items Found, Total Ineligible Items Cleared, Total Applications with Ineligible Items, Total Applications Cleared of Ineligible Items, Parser Models with Ineligible Items)
 - **Detailed Findings Table**: Application ID, Parser Model, and complete feedback for each item
 - **Parser Model Tracking**: Shows which parser flagged each application for quality analysis
 - **Visual Enhancements**: Cleared items highlighted in red ("No match found") for visibility
-- **Matched Rules**: Transparency showing which database entry triggered each prohibition
+- **Matched Rules**: Transparency showing which database entry triggered each ineligible item identification
+
+**Automation**: This report is automatically generated and posted every day at 8AM by the scheduled Power Automate trigger invoking the Copilot Agent.
