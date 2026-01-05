@@ -1,5 +1,28 @@
 # Agentic Quality Validation and Reporting Framework
 
+## Table of Contents
+
+- [Current Challenge](#current-challenge)
+- [Original Manual Workflow](#original-manual-workflow)
+- [Why Automate This Workflow?](#why-automate-this-workflow)
+- [Expected Benefits of Automation](#expected-benefits-of-automation)
+- [Why a Generative AI Solution?](#why-a-generative-ai-solution)
+- [Possible Technology Approaches](#possible-technology-approaches)
+- [Recommended Technology Solution](#recommended-technology-solution)
+  - [Why Microsoft 365 Copilot Custom Engine Agents?](#why-microsoft-365-copilot-custom-engine-agents)
+  - [Hybrid Approach: Copilot Studio + Power Automate](#hybrid-approach-copilot-studio--power-automate)
+- [Proof of Concept: Hybrid Automation Architecture](#proof-of-concept-hybrid-automation-architecture)
+  - [Proof of Concept Approach](#proof-of-concept-approach)
+  - [POC Design Decisions](#poc-design-decisions)
+  - [Architecture Diagram](#architecture-diagram)
+  - [Data Files Reference](#data-files-reference)
+  - [Detailed Workflow Steps](#detailed-workflow-steps)
+  - [Key Benefits of Hybrid Approach](#key-benefits-of-hybrid-approach)
+  - [Monitoring and Observability](#monitoring-and-observability)
+  - [POC Result Example](#poc-result-example)
+
+---
+
 ## Current Challenge
 
 Organisations use automated systems to detect prohibited items in submitted files for compliance and security. To ensure the detection system is working correctly, a quality assurance process monitors its outputs daily. Currently, this QA process involves multiple manual steps: extracting daily reports from Power BI showing items flagged by the system, manually retrieving the corresponding files from Blob Storage, cross-referencing everything against the prohibited items list to verify accuracy, generating detailed validation reports, and finally publishing findings to a Teams channel for review.
@@ -256,10 +279,14 @@ flowchart TD
     D -.->|Data access| F
     D -.->|Data access| G
     
+    T -.->|Telemetry| K[Application Insights:<br/>Monitoring & Analytics]
+    ADV -.->|Telemetry| K
+    
     style S fill:#ff69b4,stroke:#c71585,stroke-width:3px
     style T fill:#dda0dd,stroke:#9370db,stroke-width:3px
     style ADV fill:#f0f0f0,stroke:#666,stroke-width:3px
     style DS fill:#fffaf0,stroke:#daa520,stroke-width:2px,stroke-dasharray: 5 5
+    style K fill:#e1f0ff,stroke:#0078d4,stroke-width:2px
     style A fill:#fff4e1
     style B fill:#fff4e1
     style C fill:#ffe1f5
@@ -383,7 +410,56 @@ flowchart TD
 - **Data Integrity**: Systematic validation ensures all flagged items match prohibited rules
 - **Testability**: Fixed dataset ensures consistent results for validation
 
-**Note**: Pink box represents the scheduled trigger, purple box represents the Copilot Agent, blue boxes represent Power Automate flows (structured operations), green boxes represent Copilot Studio custom prompts (AI-driven tasks).
+**Note**: Pink box represents the scheduled trigger, purple box represents the Copilot Agent, blue boxes represent Power Automate flows (structured operations), green boxes represent Copilot Studio custom prompts (AI-driven tasks), light blue box represents Application Insights monitoring.
+
+### Monitoring and Observability
+
+The POC solution includes comprehensive monitoring through **Azure Application Insights**, which captures detailed telemetry for every execution of the automated workflow.
+
+#### What Gets Monitored
+
+**Event Types Captured:**
+- `BotMessageReceived` - Incoming trigger messages and prompts
+- `TopicStart/TopicEnd` - Topic execution lifecycle tracking
+- `TopicAction` - Individual actions within topics (InvokeFlowAction, InvokeAIBuilderModelAction, SetVariable, EndDialog)
+- `dependency` - Flow executions with duration metrics and success/failure status
+- `trace` - Detailed flow invocation information
+- `pageView` - Topic navigation and routing
+
+**Key Metrics Tracked:**
+- **Execution Duration**: Performance metrics for each flow and overall topic execution
+- **Success Rate**: Success/failure status for all operations
+- **Performance Buckets**: Categorized response times (e.g., "<250ms", "500ms-1sec", "1sec-3sec")
+- **Conversation Context**: Conversation IDs, session IDs for end-to-end tracing
+- **Custom Dimensions**: TopicName, ActionId, FlowId, channelId for detailed filtering
+
+#### Sample Performance Data
+
+From a typical daily execution at 8AM:
+
+| Flow | Duration | Performance Bucket |
+|------|----------|--------------------|
+| Flow 1: Extract latest packing lists | 620ms | 500ms-1sec |
+| Flow 2: Extract latest ineligible Item lists | 502ms | 500ms-1sec |
+| Flow 3: Validate Items | 3,698ms | 3sec-7sec |
+| Flow 4: Send a message on the Teams channel | 2,875ms | 1sec-3sec |
+| **Total Topic Execution** | **~22 seconds** | **End-to-end** |
+
+#### Application Insights Data
+
+For reference, a complete Application Insights export showing the detailed telemetry for one execution is available here: [application-insights-logs.csv](data/results/application-insights-logs.csv)
+
+The following screenshot shows the Application Insights query interface in Azure Portal displaying the same telemetry data:
+
+![Application Insights Telemetry Data](img/application-insights-telemetry.png)
+
+**Benefits of Application Insights Integration:**
+- **Automated Monitoring**: Captures telemetry for every scheduled 8AM execution without manual intervention
+- **Performance Analysis**: Identify bottlenecks and optimize slow-running flows
+- **Reliability Tracking**: Monitor success rates and quickly identify failures
+- **Troubleshooting**: Full conversation traces enable rapid root cause analysis
+- **Historical Analysis**: Long-term data retention for trend analysis and capacity planning
+- **Alerting**: Configure alerts for failures or performance degradation
 
 ### POC Result Example
 
