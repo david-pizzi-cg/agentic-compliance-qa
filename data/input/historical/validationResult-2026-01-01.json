@@ -1,0 +1,38 @@
+[
+  {
+    "itemId": 101,
+    "packingListId": "1735516900001",
+    "location": "Page 1",
+    "row": 3,
+    "description": "Fresh Mangoes - Kent variety, tree-ripened",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "typeOfTreatment": "Chilled",
+    "isProhibited": true,
+    "matchedRule": "Country: GH, Commodity: 08045000, Treatment: Chilled"
+  },
+  {
+    "itemId": 102,
+    "packingListId": "1735516900101",
+    "location": "Page 1",
+    "row": 5,
+    "description": "Valencia Oranges - Fresh citrus, medium size",
+    "commodityCode": "08051020",
+    "countryOfOrigin": "EG",
+    "typeOfTreatment": "Raw",
+    "isProhibited": true,
+    "matchedRule": "Country: EG, Commodity: 08051020, Treatment: null"
+  },
+  {
+    "itemId": 128,
+    "packingListId": "1735609600105",
+    "location": "Page 2",
+    "row": 1,
+    "description": "Guava Puree - Fresh fruit pulp, unsweetened",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "typeOfTreatment": "Fresh",
+    "isProhibited": true,
+    "matchedRule": "Country: GH, Commodity: 08045000, Treatment: Fresh"
+  }
+]
