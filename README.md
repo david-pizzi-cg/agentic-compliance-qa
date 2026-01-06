@@ -131,12 +131,14 @@ Automating this workflow would free approximately **5–10 hours of staff time p
 
 ## Why a Generative AI Solution?
 
-Generative AI enables intelligent report generation and data cross-referencing without rigid business logic. The solution uses LLM capabilities to:
+This workflow is well-suited to a generative AI approach because it involves processing unstructured compliance data and generating human-readable reports with contextual explanations. Traditional rule-based automation would require extensive hard-coded logic for:
 
-- **Cross-reference data** between packing lists and prohibited items databases
-- **Generate formatted reports** with natural language explanations
-- **Adapt report formatting** based on findings (violations vs. clean reports)
-- **Provide contextual feedback** in required table format
+- **Interpreting validation results** and determining appropriate report formatting based on findings
+- **Generating natural language explanations** for each compliance violation or clearance
+- **Adapting report structure** dynamically based on the number and type of violations found
+- **Producing professional HTML formatting** with proper styling and visual indicators
+
+The LLM's natural language generation capabilities enable the solution to create reports that are not only accurate but also clear and actionable for human reviewers. The generative AI component handles the intelligent formatting and explanation tasks, while structured Power Automate flows handle the data validation logic - creating an optimal division of responsibilities.
 
 ---
 
@@ -163,13 +165,14 @@ Given the requirements for this automation workflow, **Microsoft 365 Copilot cus
 
 **Why Not Declarative Agents?**
 
-Whilst Microsoft 365 Copilot supports declarative agents, they are limited to single-task operations and are prone to hallucination when handling complex, multi-step workflows. Our use case requires:
+Whilst Microsoft 365 Copilot supports declarative agents, they are limited to simple conversational scenarios and lack the orchestration capabilities needed for this workflow. Our use case requires:
 
-- Sequential coordination between multiple agents
-- Complex data processing and cross-referencing operations
-- Reliable execution across multiple stages (collection, analysis, publication)
+- **Sequential orchestration** of multiple Power Automate flows with data passing between stages
+- **Complex data processing** involving filtering, validation, and cross-referencing operations
+- **Reliable execution** across multiple stages (data collection, validation, report generation, publication)
+- **Integration** with custom prompts for AI-driven report formatting
 
-These requirements exceed the capabilities of declarative agents, making **custom engine agents** the appropriate choice for this solution.
+Declarative agents cannot orchestrate multi-step workflows or invoke Power Automate flows, making **custom engine agents built in Copilot Studio** the appropriate choice for this solution.
 
 ### Hybrid Approach: Copilot Studio + Power Automate
 
