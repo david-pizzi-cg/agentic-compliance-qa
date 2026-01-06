@@ -1,7 +1,7 @@
 [
   {
     "itemId": 101,
-    "packingListId": "1734516900001",
+    "packingListId": "1738516900401",
     "location": "Page 1",
     "row": 3,
     "description": "Fresh Mangoes - Kent variety, tree-ripened",
@@ -13,7 +13,7 @@
   },
   {
     "itemId": 102,
-    "packingListId": "1734516900001",
+    "packingListId": "1738516900402",
     "location": "Page 1",
     "row": 5,
     "description": "Valencia Oranges - Fresh citrus, medium size",
@@ -24,20 +24,20 @@
     "matchedRule": "Country: EG, Commodity: 08051020, Treatment: null"
   },
   {
-    "itemId": 107,
-    "packingListId": "1734516900001",
-    "location": "Page 3",
-    "row": 1,
-    "description": "Celery Stalks - Fresh cut, crisp variety",
-    "commodityCode": "07094000",
-    "countryOfOrigin": "EG",
-    "typeOfTreatment": "Raw",
+    "itemId": 106,
+    "packingListId": "1738516900403",
+    "location": "Page 2",
+    "row": 6,
+    "description": "Fresh Carrots - Organic, unpeeled",
+    "commodityCode": "07061000",
+    "countryOfOrigin": "CN",
+    "typeOfTreatment": "Fresh",
     "isProhibited": true,
-    "matchedRule": "Country: EG, Commodity: 07094000, Treatment: Raw"
+    "matchedRule": "Country: CN, Commodity: 07061000, Treatment: Fresh"
   },
   {
     "itemId": 128,
-    "packingListId": "1734609600005",
+    "packingListId": "1738609600405",
     "location": "Page 2",
     "row": 1,
     "description": "Guava Puree - Fresh fruit pulp, unsweetened",
@@ -48,15 +48,39 @@
     "matchedRule": "Country: GH, Commodity: 08045000, Treatment: Fresh"
   },
   {
-    "itemId": 152,
-    "packingListId": "1734698100010",
+    "itemId": 142,
+    "packingListId": "1738688800008",
     "location": "Sheet1",
-    "row": 6,
-    "description": "Clementines - Seedless variety, fresh citrus",
-    "commodityCode": "08054000",
+    "row": 7,
+    "description": "Mandarin Segments - Canned in light syrup",
+    "commodityCode": "08052100",
     "countryOfOrigin": "EG",
-    "typeOfTreatment": "Fresh",
+    "typeOfTreatment": "Raw",
     "isProhibited": true,
-    "matchedRule": "Country: EG, Commodity: 08054000, Treatment: null"
+    "matchedRule": "Country: EG, Commodity: 08052100, Treatment: null"
+  },
+  {
+    "itemId": 162,
+    "packingListId": "1738709200012",
+    "location": "Page 2",
+    "row": 2,
+    "description": "Mango Slices - Frozen, IQF processed",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "typeOfTreatment": "Unprocessed",
+    "isProhibited": true,
+    "matchedRule": "Country: GH, Commodity: 08045000, Treatment: Unprocessed"
+  },
+  {
+    "itemId": 171,
+    "packingListId": "1738773400014",
+    "location": "Sheet1",
+    "row": 3,
+    "description": "Guava Juice - 100% pure, not from concentrate",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "typeOfTreatment": "Raw",
+    "isProhibited": true,
+    "matchedRule": "Country: GH, Commodity: 08045000, Treatment: Raw"
   }
 ]

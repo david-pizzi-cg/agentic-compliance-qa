@@ -1,7 +1,7 @@
 [
   {
     "itemId": 101,
-    "packingListId": "1737516900301",
+    "packingListId": "1735516900001",
     "location": "Page 1",
     "row": 3,
     "description": "Fresh Mangoes - Kent variety, tree-ripened",
@@ -13,7 +13,7 @@
   },
   {
     "itemId": 102,
-    "packingListId": "1737516900302",
+    "packingListId": "1735516900101",
     "location": "Page 1",
     "row": 5,
     "description": "Valencia Oranges - Fresh citrus, medium size",
@@ -24,20 +24,8 @@
     "matchedRule": "Country: EG, Commodity: 08051020, Treatment: null"
   },
   {
-    "itemId": 107,
-    "packingListId": "1737516900303",
-    "location": "Page 3",
-    "row": 1,
-    "description": "Celery Stalks - Fresh cut, crisp variety",
-    "commodityCode": "07094000",
-    "countryOfOrigin": "EG",
-    "typeOfTreatment": "Raw",
-    "isProhibited": true,
-    "matchedRule": "Country: EG, Commodity: 07094000, Treatment: Raw"
-  },
-  {
     "itemId": 128,
-    "packingListId": "1737609600305",
+    "packingListId": "1735609600105",
     "location": "Page 2",
     "row": 1,
     "description": "Guava Puree - Fresh fruit pulp, unsweetened",
@@ -46,17 +34,5 @@
     "typeOfTreatment": "Fresh",
     "isProhibited": true,
     "matchedRule": "Country: GH, Commodity: 08045000, Treatment: Fresh"
-  },
-  {
-    "itemId": 152,
-    "packingListId": "1737698100010",
-    "location": "Sheet1",
-    "row": 6,
-    "description": "Clementines - Seedless variety, fresh citrus",
-    "commodityCode": "08054000",
-    "countryOfOrigin": "EG",
-    "typeOfTreatment": "Fresh",
-    "isProhibited": true,
-    "matchedRule": "Country: EG, Commodity: 08054000, Treatment: null"
   }
 ]

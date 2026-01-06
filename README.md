@@ -241,7 +241,7 @@ To validate the workflow without integration complexity, the POC uses mock data 
 - **No Live Integration**: Bypasses PostgreSQL and Power BI to focus on workflow automation
 - **Validation Rules**: Implements actual business logic (exact country match, commodity prefix match, conditional treatment matching)
 - **Parser Model Tracking**: Report includes parser model for each application to enable quality analysis across different parsers
-- **Historical Trend Analysis**: Includes 4 days of pre-generated historical validation results (Jan 2-5, 2026) to demonstrate Gen AI's ability to identify patterns, trends, and actionable insights beyond templated formatting
+- **Historical Trend Analysis**: Includes 4 days of pre-generated historical validation results (Jan 1-4, 2026 submissions) to demonstrate Gen AI's ability to identify patterns, trends, and actionable insights beyond templated formatting
 
 ### Architecture Diagram
 
@@ -277,7 +277,7 @@ flowchart TD
         A[Packing Lists Data]
         B[Items List Data]
         C[Ineligible Items Database]
-        HIS[Historical Results<br/>Jan 2-5, 2026]
+        HIS[Historical Results<br/>Jan 1-4 submissions]
         A --> D[Azure Blob Storage:<br/>Mock Dataset]
         B --> D
         C --> D
@@ -329,13 +329,14 @@ flowchart TD
 | **packing_list_mock_data.json** | Input Data | Packing lists with submission metadata, parser models, and failure reasons | [View sample](data/input/packing_list_mock_data.json) |
 | **items_list_mock_data.json** | Input Data | Individual items extracted from packing lists with commodity codes and treatments | [View sample](data/input/items_list_mock_data.json) |
 | **data-ineligible-items.json** | Input Data | Ineligible items database with 2038 rules (country, commodity code, treatment combinations) | [View sample](data/input/data-ineligible-items.json) |
-| **validationResult-2026-01-02.json** | Historical Data | Validation results from Jan 2, 2026 (4 days ago) | [View sample](data/results/validationResult-2026-01-02.json) |
-| **validationResult-2026-01-03.json** | Historical Data | Validation results from Jan 3, 2026 (3 days ago) | [View sample](data/results/validationResult-2026-01-03.json) |
-| **validationResult-2026-01-04.json** | Historical Data | Validation results from Jan 4, 2026 (2 days ago) | [View sample](data/results/validationResult-2026-01-04.json) |
-| **validationResult-2026-01-05.json** | Historical Data | Validation results from Jan 5, 2026 (yesterday) | [View sample](data/results/validationResult-2026-01-05.json) |
+| **validationResult-2026-01-01.json** | Historical Data | Validation results from Jan 1, 2026 submissions | [View sample](data/input/historical/validationResult-2026-01-01.json) |
+| **validationResult-2026-01-02.json** | Historical Data | Validation results from Jan 2, 2026 submissions | [View sample](data/input/historical/validationResult-2026-01-02.json) |
+| **validationResult-2026-01-03.json** | Historical Data | Validation results from Jan 3, 2026 submissions | [View sample](data/input/historical/validationResult-2026-01-03.json) |
+| **validationResult-2026-01-04.json** | Historical Data | Validation results from Jan 4, 2026 submissions | [View sample](data/input/historical/validationResult-2026-01-04.json) |
 | **packingListData.json** | Flow 1 Output | Flagged applications with parser models (7 applications with ineligible item failures) | [View sample](data/results/packingListData.json) |
 | **matchedItems.json** | Flow 2 Output | Filtered items from flagged applications with failure indicators | [View sample](data/results/matchedItems.json) |
-| **validationResult.json** | Flow 3 Output | Validation results with isProhibited flags and matched rule details (today: Jan 6, 2026) | [View sample](data/results/validationResult.json) |
+| **validationResult.json** | Flow 3 Output | Validation results from Jan 5, 2026 submissions (validated on Jan 6, 2026) | [View sample](data/results/validationResult.json) |
+| **historicalResults.json** | Flow 4 Output | Array of 5 validation result objects: 4 historical days (Jan 1-4, 2026) + today's result (Jan 5, 2026) for trend analysis | [View sample](data/results/historicalResults.json) |
 | **validationReport.html** | Custom Prompt Output | Formatted HTML compliance report with trend analysis, parser model tracking, and detailed findings | [View sample](data/results/validationReport.html) |
 
 ### Detailed Workflow Steps
@@ -393,21 +394,22 @@ flowchart TD
 - **Type**: Power Automate Flow
 - **Purpose**: Persist today's validation result and collect last 5 days for trend analysis
 - **Input**: [validationResult.json](data/results/validationResult.json) (from Flow 3)
-- **Output**: Array of 5 validation result objects (Jan 2-6, 2026)
+- **Output**: [historicalResults.json](data/results/historicalResults.json) - Array of 5 objects, each containing reportDate and validationResults (4 historical days Jan 1-4 + today Jan 5)
 - **Operations**:
   - Get current date in YYYY-MM-DD format
   - Save validation result to Azure Blob Storage as `validationResult-YYYY-MM-DD.json`
   - List files matching pattern `validationResult-2026-01-*.json`
-  - Retrieve last 5 files (4 historical + today's saved result)
-  - Combine into single array for trend analysis
-  - Pass to custom prompt for intelligent summarization
+  - Sort by LastModified date and take last 5 files (4 historical + today's saved result)
+  - Loop through each file: retrieve content, parse JSON, compose object with reportDate and validationResults
+  - Append each composed object to historicalResults array
+  - Return structured array for trend analysis by custom prompt
 
 #### **Custom Prompt: Analyze Trends & Format Report**
 - **Type**: Copilot Studio Custom Prompt ('Automated Daily Validation')
 - **Purpose**: Analyze historical trends and generate formatted compliance report with actionable insights
 - **Inputs**:
-  - reportDate: Date for the report
-  - historicalResults: Array of 5 validation results (Jan 2-6, 2026) from Flow 4 - includes today's result as last item
+  - reportDate: Date for the report (2026-01-05)
+  - historicalResults: Array of 5 validation results from Flow 4 - 4 historical days (Jan 1-4, 2026) + today's result (Jan 5, 2026) as last item
   - [packingListData.json](data/results/packingListData.json) (from Flow 1) - for parser model mapping
 - **Output**: [validationReport.html](data/results/validationReport.html)
 - **Operations**:
@@ -445,7 +447,6 @@ flowchart TD
 - **Intelligent Insights**: Gen AI analyzes 5-day trends to identify patterns, repeat offenders, anomalies, and actionable recommendations beyond templated formatting
 - **Historical Context**: Data persistence enables trend tracking and demonstrates production-ready architecture
 - **Value Demonstration**: Trend analysis showcases Gen AI's unique capability for contextual reasoning vs. pure Power Automate templated reports
-- **Intelligent Insights**: Gen AI analyzes 5-day trends to identify patterns, repeat offenders, anomalies, and actionable recommendations beyond templated formatting
 - **Historical Context**: Data persistence enables trend tracking and demonstrates production-ready architecture
 - **Value Demonstration**: Trend analysis showcases Gen AI's unique capability for contextual reasoning vs. pure Power Automate templated reports
 
@@ -478,11 +479,12 @@ From a typical daily execution at 8AM:
 
 | Flow | Duration | Performance Bucket |
 |------|----------|--------------------|
-| Flow 1: Extract latest packing lists | 620ms | 500ms-1sec |
-| Flow 2: Extract latest ineligible Item lists | 502ms | 500ms-1sec |
-| Flow 3: Validate Items | 3,698ms | 3sec-7sec |
-| Flow 4: Send a message on the Teams channel | 2,875ms | 1sec-3sec |
-| **Total Topic Execution** | **~22 seconds** | **End-to-end** |
+| Flow 1: Filter Packing Lists | 611ms | 500ms-1sec |
+| Flow 2: Filter Items | 542ms | 500ms-1sec |
+| Flow 3: Validate Items | 3,858ms | 3sec-7sec |
+| Flow 4: Save & Retrieve Historical Data | 2,300ms | 1sec-3sec |
+| Flow 5: Post to Teams | 2,875ms | 1sec-3sec |
+| **Total Topic Execution** | **~10-15 seconds** | **End-to-end** |
 
 #### Application Insights Data
 
