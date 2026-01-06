@@ -1,0 +1,50 @@
+[
+  {
+    "itemId": 101,
+    "packingListId": "1734516900001",
+    "location": "Page 1",
+    "row": 3,
+    "description": "Fresh Mangoes - Kent variety, tree-ripened",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "typeOfTreatment": "Chilled",
+    "isProhibited": true,
+    "matchedRule": "Country: GH, Commodity: 08045000, Treatment: Chilled"
+  },
+  {
+    "itemId": 106,
+    "packingListId": "1734516900001",
+    "location": "Page 2",
+    "row": 6,
+    "description": "Fresh Carrots - Organic, unpeeled",
+    "commodityCode": "07061000",
+    "countryOfOrigin": "CN",
+    "typeOfTreatment": "Fresh",
+    "isProhibited": true,
+    "matchedRule": "Country: CN, Commodity: 07061000, Treatment: Fresh"
+  },
+  {
+    "itemId": 142,
+    "packingListId": "1734688800008",
+    "location": "Sheet1",
+    "row": 7,
+    "description": "Mandarin Segments - Canned in light syrup",
+    "commodityCode": "08052100",
+    "countryOfOrigin": "EG",
+    "typeOfTreatment": "Raw",
+    "isProhibited": true,
+    "matchedRule": "Country: EG, Commodity: 08052100, Treatment: null"
+  },
+  {
+    "itemId": 171,
+    "packingListId": "1734773400014",
+    "location": "Sheet1",
+    "row": 3,
+    "description": "Guava Juice - 100% pure, not from concentrate",
+    "commodityCode": "08045000",
+    "countryOfOrigin": "GH",
+    "typeOfTreatment": "Raw",
+    "isProhibited": true,
+    "matchedRule": "Country: GH, Commodity: 08045000, Treatment: Raw"
+  }
+]

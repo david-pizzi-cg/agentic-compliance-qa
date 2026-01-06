@@ -223,8 +223,9 @@ The proof of concept (POC) uses a hybrid architecture combining Power Automate f
 2. **Data Filtering** - Power Automate flow retrieves packing lists with ineligible item failures from Azure Blob Storage
 3. **Item Filtering** - Power Automate flow filters items list to those from flagged applications with failure indicators
 4. **Validation** - Power Automate flow validates filtered items against the ineligible items database
-5. **Report Formatting** - Custom prompt generates formatted HTML report with metrics, parser model tracking, and detailed findings
-6. **Teams Publishing** - Power Automate posts the report to a Teams channel
+5. **Historical Data Management** - Power Automate flow saves today's validation result to Blob Storage and retrieves the last 5 days for trend analysis
+6. **Report Formatting** - Custom prompt analyzes historical trends and generates formatted HTML report with insights, metrics, parser model tracking, and detailed findings
+7. **Teams Publishing** - Power Automate posts the report to a Teams channel
 
 To validate the workflow without integration complexity, the POC uses mock data representing real production data structures. The packing list and items list data structures mirror the actual output from the production packing list parser system, augmented with relevant test data to demonstrate prohibited item detection scenarios.
 
@@ -240,6 +241,7 @@ To validate the workflow without integration complexity, the POC uses mock data 
 - **No Live Integration**: Bypasses PostgreSQL and Power BI to focus on workflow automation
 - **Validation Rules**: Implements actual business logic (exact country match, commodity prefix match, conditional treatment matching)
 - **Parser Model Tracking**: Report includes parser model for each application to enable quality analysis across different parsers
+- **Historical Trend Analysis**: Includes 4 days of pre-generated historical validation results (Jan 2-5, 2026) to demonstrate Gen AI's ability to identify patterns, trends, and actionable insights beyond templated formatting
 
 ### Architecture Diagram
 
@@ -257,30 +259,35 @@ flowchart TD
         E[Flow 1:<br/>Filter Packing Lists]
         F[Flow 2:<br/>Filter Items]
         G[Flow 3:<br/>Validate Items]
-        H[Custom Prompt:<br/>Format Report]
-        I[Flow 4:<br/>Post to Teams]
+        G4[Flow 4:<br/>Save & Retrieve<br/>Historical Data]
+        H[Custom Prompt:<br/>Analyze Trends &<br/>Format Report]
+        I2[Flow 5:<br/>Post to Teams]
         
         E --> F
         F --> G
-        G --> H
-        H --> I
+        G --> G4
+        G4 --> H
+        H --> I2
     end
     
-    I --> J[Teams Channel]
+    I2 --> J[Teams Channel]
     
     subgraph DS["Data Sources"]
         direction TB
         A[Packing Lists Data]
         B[Items List Data]
         C[Ineligible Items Database]
+        HIS[Historical Results<br/>Jan 2-5, 2026]
         A --> D[Azure Blob Storage:<br/>Mock Dataset]
         B --> D
         C --> D
+        HIS --> D
     end
     
     D -.->|Data access| E
     D -.->|Data access| F
     D -.->|Data access| G
+    D <-.->|Save & Retrieve| G4
     
     T -.->|Telemetry| K[Application Insights:<br/>Monitoring & Analytics]
     ADV -.->|Telemetry| K
@@ -297,15 +304,17 @@ flowchart TD
     style E fill:#87ceeb,stroke:#4682b4,stroke-width:3px
     style F fill:#87ceeb,stroke:#4682b4,stroke-width:3px
     style G fill:#87ceeb,stroke:#4682b4,stroke-width:3px
+    style G4 fill:#87ceeb,stroke:#4682b4,stroke-width:3px
     style H fill:#98fb98,stroke:#228b22,stroke-width:3px
-    style I fill:#87ceeb,stroke:#4682b4,stroke-width:3px
+    style I2 fill:#87ceeb,stroke:#4682b4,stroke-width:3px
     style J fill:#e1f5ff
+    style HIS fill:#ffe1f5
     
     classDef flow fill:#87ceeb,stroke:#4682b4,stroke-width:3px
     classDef prompt fill:#98fb98,stroke:#228b22,stroke-width:3px
     classDef trigger fill:#ff69b4,stroke:#c71585,stroke-width:3px
     classDef agent fill:#dda0dd,stroke:#9370db,stroke-width:3px
-    class E,F,G,I flow
+    class E,F,G,G4,I2 flow
     class H prompt
     class S trigger
     class T agent
@@ -320,10 +329,14 @@ flowchart TD
 | **packing_list_mock_data.json** | Input Data | Packing lists with submission metadata, parser models, and failure reasons | [View sample](data/input/packing_list_mock_data.json) |
 | **items_list_mock_data.json** | Input Data | Individual items extracted from packing lists with commodity codes and treatments | [View sample](data/input/items_list_mock_data.json) |
 | **data-ineligible-items.json** | Input Data | Ineligible items database with 2038 rules (country, commodity code, treatment combinations) | [View sample](data/input/data-ineligible-items.json) |
+| **validationResult-2026-01-02.json** | Historical Data | Validation results from Jan 2, 2026 (4 days ago) | [View sample](data/results/validationResult-2026-01-02.json) |
+| **validationResult-2026-01-03.json** | Historical Data | Validation results from Jan 3, 2026 (3 days ago) | [View sample](data/results/validationResult-2026-01-03.json) |
+| **validationResult-2026-01-04.json** | Historical Data | Validation results from Jan 4, 2026 (2 days ago) | [View sample](data/results/validationResult-2026-01-04.json) |
+| **validationResult-2026-01-05.json** | Historical Data | Validation results from Jan 5, 2026 (yesterday) | [View sample](data/results/validationResult-2026-01-05.json) |
 | **packingListData.json** | Flow 1 Output | Flagged applications with parser models (7 applications with ineligible item failures) | [View sample](data/results/packingListData.json) |
 | **matchedItems.json** | Flow 2 Output | Filtered items from flagged applications with failure indicators | [View sample](data/results/matchedItems.json) |
-| **validationResult.json** | Flow 3 Output | Validation results with isProhibited flags and matched rule details | [View sample](data/results/validationResult.json) |
-| **validationReport.html** | Custom Prompt Output | Formatted HTML compliance report with parser model tracking and detailed findings | [View sample](data/results/validationReport.html) |
+| **validationResult.json** | Flow 3 Output | Validation results with isProhibited flags and matched rule details (today: Jan 6, 2026) | [View sample](data/results/validationResult.json) |
+| **validationReport.html** | Custom Prompt Output | Formatted HTML compliance report with trend analysis, parser model tracking, and detailed findings | [View sample](data/results/validationReport.html) |
 
 ### Detailed Workflow Steps
 
@@ -376,24 +389,41 @@ flowchart TD
   - Conditional match on treatment type (null handling)
   - Return isProhibited flag and matched rule details
 
-#### **Custom Prompt: Format Report**
+#### **Flow 4: Save and Retrieve Historical Data**
+- **Type**: Power Automate Flow
+- **Purpose**: Persist today's validation result and collect last 5 days for trend analysis
+- **Input**: [validationResult.json](data/results/validationResult.json) (from Flow 3)
+- **Output**: Array of 5 validation result objects (Jan 2-6, 2026)
+- **Operations**:
+  - Get current date in YYYY-MM-DD format
+  - Save validation result to Azure Blob Storage as `validationResult-YYYY-MM-DD.json`
+  - List files matching pattern `validationResult-2026-01-*.json`
+  - Retrieve last 5 files (4 historical + today's saved result)
+  - Combine into single array for trend analysis
+  - Pass to custom prompt for intelligent summarization
+
+#### **Custom Prompt: Analyze Trends & Format Report**
 - **Type**: Copilot Studio Custom Prompt ('Automated Daily Validation')
-- **Purpose**: Generate formatted compliance report with parser model tracking
+- **Purpose**: Analyze historical trends and generate formatted compliance report with actionable insights
 - **Inputs**:
   - reportDate: Date for the report
-  - [validationResult.json](data/results/validationResult.json) (from Flow 3)
-  - [packingListData.json](data/results/packingListData.json) (from Flow 1)
+  - historicalResults: Array of 5 validation results (Jan 2-6, 2026) from Flow 4 - includes today's result as last item
+  - [packingListData.json](data/results/packingListData.json) (from Flow 1) - for parser model mapping
 - **Output**: [validationReport.html](data/results/validationReport.html)
 - **Operations**:
+  - **Trend Analysis**: Compare today's violations against 5-day historical data to identify increasing/decreasing patterns
+  - **Pattern Recognition**: Detect repeat offenders (same shipper IDs appearing multiple days)
+  - **Anomaly Detection**: Flag unusual spikes or new violation categories
+  - **Actionable Recommendations**: Generate prioritized action items based on trends
   - Calculate summary metrics (Total Ineligible Items Found, Total Ineligible Items Cleared, Total Applications with Ineligible Items, Total Applications Cleared of Ineligible Items)
   - Extract unique parser models with ineligible items from packingListData
   - Map parserModel to each application in the report
   - Group items by Application ID
-  - Format as HTML for Teams with parser model column
+  - Format as HTML for Teams with executive summary, trend insights, parser model column, and detailed findings
   - Highlight cleared items in red ("No match found")
   - Include detailed findings with matched rules for auditability
 
-#### **Flow 4: Post to Teams**
+#### **Flow 5: Post to Teams**
 - **Type**: Power Automate Flow
 - **Purpose**: Publish report to Teams channel
 - **Input**: [validationReport.html](data/results/validationReport.html) (from Custom Prompt)
@@ -412,6 +442,12 @@ flowchart TD
 - **Scalability**: Flow logic handles null values, multiple items per application, edge cases
 - **Data Integrity**: Systematic validation ensures all flagged items match prohibited rules
 - **Testability**: Fixed dataset ensures consistent results for validation
+- **Intelligent Insights**: Gen AI analyzes 5-day trends to identify patterns, repeat offenders, anomalies, and actionable recommendations beyond templated formatting
+- **Historical Context**: Data persistence enables trend tracking and demonstrates production-ready architecture
+- **Value Demonstration**: Trend analysis showcases Gen AI's unique capability for contextual reasoning vs. pure Power Automate templated reports
+- **Intelligent Insights**: Gen AI analyzes 5-day trends to identify patterns, repeat offenders, anomalies, and actionable recommendations beyond templated formatting
+- **Historical Context**: Data persistence enables trend tracking and demonstrates production-ready architecture
+- **Value Demonstration**: Trend analysis showcases Gen AI's unique capability for contextual reasoning vs. pure Power Automate templated reports
 
 **Note**: Pink box represents the scheduled trigger, purple box represents the Copilot Agent, blue boxes represent Power Automate flows (structured operations), green boxes represent Copilot Studio custom prompts (AI-driven tasks), light blue box represents Application Insights monitoring.
 
@@ -472,6 +508,7 @@ The following screenshot shows the actual output posted to Teams channel by the 
 
 The report includes:
 - **Report Header**: Date and emoji for visual identification
+- **Trend Insights Section** (NEW): AI-generated analysis of 5-day historical data showing violation trends, repeat offenders, anomalies, and prioritized action items
 - **Executive Summary**: Key metrics (Total Ineligible Items Found, Total Ineligible Items Cleared, Total Applications with Ineligible Items, Total Applications Cleared of Ineligible Items, Parser Models with Ineligible Items)
 - **Detailed Findings Table**: Application ID, Parser Model, and complete feedback for each item
 - **Parser Model Tracking**: Shows which parser flagged each application for quality analysis

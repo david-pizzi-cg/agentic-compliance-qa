@@ -1,10 +1,10 @@
-# Daily Compliance Validation Report Format
+# Daily Compliance Validation Report Format with Trend Analysis
 ## Purpose
-Format the validation results into a professional daily Teams report with summary metrics and detailed findings.
+Analyze historical validation trends and format the results into a professional daily Teams report with trend insights, summary metrics, and detailed findings.
 
 ## Input Data
 - reportDate 
-- validationResult
+- historicalResults (array of 5 validation result objects from past 5 days, including today)
 - packingListData (array of packing list objects with applicationId and parserModel)
 
 ## Report Structure
@@ -13,7 +13,29 @@ Format the validation results into a professional daily Teams report with summar
 <strong>Date:</strong> [Report Date]<br>
 <hr>
 
-### 2. Executive Summary
+### 2. Trend Analysis (NEW)
+Analyze the 5-day historical data to identify patterns and provide actionable insights:
+
+<strong>📊 5-Day Trend Analysis</strong><br>
+<ul>
+<li><strong>Violation Trend:</strong> [Describe if violations are increasing/decreasing/stable. Example: "Violations increased 60% this week (8 today vs. 5 daily average)"]</li>
+<li><strong>Repeat Patterns:</strong> [Identify any applicationIds or commodity codes appearing multiple days. Example: "Packing list 1734516900001 appears in 4 of 5 days"]</li>
+<li><strong>Category Insights:</strong> [Highlight specific countries or commodity codes with concentration. Example: "Ghana (GH) mangoes (08045000) account for 40% of all violations"]</li>
+<li><strong>Priority Actions:</strong> [Provide 1-2 specific recommendations. Example: "Recommend shipper training for repetitive violations"]</li>
+</ul>
+<br>
+
+**Analysis Guidelines:**
+- Calculate daily violation counts from historical data
+- Identify applicationIds appearing in multiple days
+- Group violations by countryOfOrigin and commodityCode to spot concentrations
+- Compare today's count to 5-day average to identify spikes
+- Be specific with numbers and percentages
+- Keep insights concise (2-3 sentences per bullet)
+
+### 3. Executive Summary
+**Note:** Use today's validation data (last item in historicalResults array) for summary metrics.
+
 <strong>Summary</strong><br>
 <ul>
 <li><strong>Total Ineligible Items Found:</strong> [count of items where isProhibited=true]</li>
