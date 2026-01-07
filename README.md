@@ -118,7 +118,7 @@ This proof of concept demonstrates how **low-code agentic automation** could hav
 | **Manual Approach (Phase 3)** | **This POC's Automation** | **Impact** |
 |-------------------------------|---------------------------|------------|
 | 1-2 hours per day | <1 minute per day | **99%+ time reduction** |
-| 5-10 hours per week | Fully automated | **~400 hours saved over 3-month period** |
+| 5-10 hours per week | Fully automated | **~100 hours saved over 3-month period** |
 | Manual data extraction | Automated data retrieval | Eliminated human error |
 | Inconsistent reporting | Standardized output | Improved reliability |
 | Business hours only | 24/7 scheduled execution | Always current |
@@ -668,8 +668,8 @@ This proof of concept successfully demonstrates how **low-code agentic automatio
 - Production-ready monitoring and observability with zero infrastructure overhead
 
 **Business Value**
-- **99%+ time reduction**: From 1-2 hours of manual work to <1 minute of automated execution
-- **400+ hours saved**: Estimated time savings over the 3-month Phase 3 trust-building period
+- **99%+ time reduction**: From 1-2 hours of manual work (average 90 minutes) to <1 minute of automated execution daily
+- **~100 hours saved**: Average 7.5 hours/week over 13 working weeks during the 3-month Phase 3 trust-building period
 - **Enhanced insights**: Gen AI-powered trend analysis, pattern recognition, and actionable recommendations impossible with traditional automation
 
 **Strategic Foundation**
@@ -710,7 +710,3 @@ This POC validates that **Microsoft 365 Copilot custom engine agents** represent
 - Governance and security alignment with enterprise standards
 
 By combining the orchestration power of Power Automate with the intelligent reasoning of generative AI, organizations can build sophisticated automation solutions that deliver both operational efficiency and strategic intelligence.
-
----
-
-**For questions or further discussion about this proof of concept, please contact the project team.**
